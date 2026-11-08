@@ -1,0 +1,10 @@
+<div class="page settings-page">
+  <header class="page-header"><div><h1 class="page-title">Настройки</h1><p class="page-subtitle">Демонстрационные параметры проекта и данные приложения.</p></div></header>
+  <section class="settings-grid">
+    <article class="card setting-card"><div><span class="setting-icon">◐</span><div><h2>Тема интерфейса</h2><p>Переключение сохраняется между сессиями.</p></div></div><button class="btn" type="button" (click)="theme.toggle()">{{ theme.dark() ? 'Светлая тема' : 'Тёмная тема' }}</button></article>
+    <article class="card setting-card"><div><span class="setting-icon">↻</span><div><h2>Демо-данные</h2><p>Вернуть исходные задачи, участников и активность.</p></div></div><button class="btn btn-danger" type="button" (click)="reset()">Сбросить данные</button></article>
+    @if (resetDone()) { <div class="success-message">✓ Демо-данные восстановлены</div> }
+    <article class="card about-card"><div class="about-logo">F</div><div><h2>FlowBoard 1.0</h2><p>Учебный production-like проект для портфолио frontend-разработчика. Реализован на Angular со standalone-компонентами, Signals, lazy routes, reactive forms и локальным репозиторием данных.</p><div class="tech-list"><span>Angular 21 LTS</span><span>TypeScript</span><span>Signals</span><span>RxJS</span><span>SCSS</span><span>Vitest</span></div></div></article>
+    <article class="card checklist"><h2>Что рассказать на собеседовании</h2><ol><li>Почему состояние хранится в сервисе на Signals.</li><li>Как computed-значения исключают ручную синхронизацию метрик.</li><li>Как реализованы optimistic UI и localStorage persistence.</li><li>Как устроены lazy-loaded маршруты и standalone-компоненты.</li><li>Какие части заменить REST API и авторизацией в production.</li></ol></article>
+  </section>
+</div>

@@ -1,0 +1,51 @@
+<div class="app-shell">
+  <aside class="sidebar" [class.open]="menuOpen()">
+    <a class="brand" routerLink="/dashboard" (click)="closeMenu()">
+      <span class="brand-mark">F</span>
+      <span><strong>FlowBoard</strong><small>Product workspace</small></span>
+    </a>
+
+    <nav class="nav" aria-label="Основная навигация">
+      @for (item of navigation; track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active" (click)="closeMenu()">
+          <span class="nav-icon" aria-hidden="true">{{ item.icon }}</span>
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+
+    <div class="sprint-card">
+      <div class="sprint-top"><span>Спринт 24</span><strong>68%</strong></div>
+      <div class="progress"><span style="width: 68%"></span></div>
+      <small>4 дня до завершения</small>
+    </div>
+
+    <div class="profile">
+      <span class="avatar">ИЛ</span>
+      <span><strong>Илья Лёвин</strong><small>Frontend developer</small></span>
+      <button class="profile-more" type="button" aria-label="Меню профиля">•••</button>
+    </div>
+  </aside>
+
+  @if (menuOpen()) {
+    <button class="overlay" type="button" aria-label="Закрыть меню" (click)="closeMenu()"></button>
+  }
+
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-button" type="button" aria-label="Открыть меню" (click)="menuOpen.set(true)">☰</button>
+      <div class="topbar-copy">
+        <strong>Разработка продукта</strong>
+        <span>Портфолио-проект на Angular</span>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn" type="button" (click)="theme.toggle()" [attr.aria-label]="theme.dark() ? 'Включить светлую тему' : 'Включить тёмную тему'">
+          {{ theme.dark() ? '☀' : '◐' }}
+        </button>
+        <span class="status-dot" title="Данные сохраняются локально"></span>
+      </div>
+    </header>
+
+    <section class="content"><router-outlet /></section>
+  </main>
+</div>

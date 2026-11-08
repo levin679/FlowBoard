@@ -1,0 +1,56 @@
+<div class="page board-page">
+  <header class="page-header">
+    <div><h1 class="page-title">Доска задач</h1><p class="page-subtitle">Перетаскивайте карточки между колонками. Изменения сохраняются в localStorage.</p></div>
+    <div class="page-actions"><button class="btn" type="button" (click)="clearFilters()">Сбросить фильтры</button><button class="btn btn-primary" type="button" (click)="openCreate()">+ Новая задача</button></div>
+  </header>
+
+  <section class="filters card" aria-label="Фильтры доски">
+    <label class="search-field"><span class="sr-only">Поиск</span><span aria-hidden="true">⌕</span><input class="input" type="search" placeholder="Поиск по задачам и тегам" [formControl]="searchControl"></label>
+    <select class="select" aria-label="Фильтр по приоритету" [value]="store.filters().priority" (change)="setPriority($any($event.target).value)">
+      <option value="all">Все приоритеты</option><option value="critical">Критичный</option><option value="high">Высокий</option><option value="medium">Средний</option><option value="low">Низкий</option>
+    </select>
+    <select class="select" aria-label="Фильтр по исполнителю" [value]="store.filters().assigneeId" (change)="store.setAssignee($any($event.target).value)">
+      <option value="all">Вся команда</option>@for (member of store.members(); track member.id) { <option [value]="member.id">{{ member.name }}</option> }
+    </select>
+    <span class="filter-count">Показано {{ store.filteredTasks().length }} из {{ store.tasks().length }}</span>
+  </section>
+
+  <section class="board" aria-label="Канбан-доска">
+    @for (column of columns; track column.id) {
+      <article class="column" (dragover)="$event.preventDefault()" (drop)="drop(column.id)">
+        <header class="column-head"><div><h2>{{ column.label }} <span>{{ store.tasksByStatus(column.id).length }}</span></h2><p>{{ column.hint }}</p></div><button type="button" aria-label="Добавить задачу" (click)="openCreate(column.id)">+</button></header>
+        <div class="task-list">
+          @for (task of store.tasksByStatus(column.id); track task.id) {
+            <article class="task-card" draggable="true" (dragstart)="startDrag(task.id)" [class.dragging]="draggedTaskId() === task.id">
+              <div class="task-top"><span class="badge" [attr.data-priority]="task.priority">{{ priorityLabel(task.priority) }}</span><button type="button" aria-label="Удалить задачу" (click)="store.deleteTask(task.id)">×</button></div>
+              <h3>{{ task.title }}</h3><p>{{ task.description }}</p>
+              <div class="labels">@for (label of task.labels; track label) { <span>#{{ label }}</span> }</div>
+              <div class="task-meta"><span class="mini-avatar" [title]="store.memberName(task.assigneeId)">{{ store.memberInitials(task.assigneeId) }}</span><span>◷ {{ task.estimate }}</span><time [class.overdue]="task.status !== 'done' && task.dueDate < today">{{ task.dueDate | date:'d MMM':'':'ru-RU' }}</time></div>
+            </article>
+          } @empty {
+            <app-empty-state icon="↓" title="Колонка пуста" text="Перетащите сюда карточку или создайте новую задачу." />
+          }
+        </div>
+      </article>
+    }
+  </section>
+</div>
+
+@if (modalOpen()) {
+  <div class="modal-backdrop" (click)="modalOpen.set(false)">
+    <form class="modal" [formGroup]="form" (ngSubmit)="submit()" (click)="$event.stopPropagation()">
+      <div class="modal-head"><h2>Новая задача</h2><button class="icon-btn" type="button" aria-label="Закрыть" (click)="modalOpen.set(false)">×</button></div>
+      <div class="modal-body form-grid">
+        <label class="field span-2"><span>Название</span><input class="input" formControlName="title" placeholder="Например, добавить skeleton loading">@if (form.controls.title.touched && form.controls.title.invalid) { <small class="field-error">Введите минимум 4 символа.</small> }</label>
+        <label class="field span-2"><span>Описание</span><textarea class="textarea" formControlName="description" placeholder="Что требуется сделать и какой результат ожидается"></textarea>@if (form.controls.description.touched && form.controls.description.invalid) { <small class="field-error">Описание должно содержать минимум 10 символов.</small> }</label>
+        <label class="field"><span>Статус</span><select class="select" formControlName="status">@for (column of columns; track column.id) { <option [value]="column.id">{{ column.label }}</option> }</select></label>
+        <label class="field"><span>Приоритет</span><select class="select" formControlName="priority"><option value="low">Низкий</option><option value="medium">Средний</option><option value="high">Высокий</option><option value="critical">Критичный</option></select></label>
+        <label class="field"><span>Исполнитель</span><select class="select" formControlName="assigneeId">@for (member of store.members(); track member.id) { <option [value]="member.id">{{ member.name }}</option> }</select></label>
+        <label class="field"><span>Срок</span><input class="input" type="date" formControlName="dueDate"></label>
+        <label class="field"><span>Оценка, story points</span><input class="input" type="number" min="1" max="21" formControlName="estimate"></label>
+        <label class="field"><span>Теги через запятую</span><input class="input" formControlName="labels"></label>
+      </div>
+      <div class="modal-actions"><button class="btn" type="button" (click)="modalOpen.set(false)">Отмена</button><button class="btn btn-primary" type="submit">Создать задачу</button></div>
+    </form>
+  </div>
+}

@@ -1,0 +1,22 @@
+<div class="page">
+  <header class="page-header"><div><h1 class="page-title">Команда</h1><p class="page-subtitle">Роли, навыки и текущая загрузка участников проекта.</p></div><button class="btn btn-primary" type="button">+ Пригласить участника</button></header>
+
+  <section class="metric-grid">
+    <article class="card metric-card"><span class="metric-label">Участников</span><strong class="metric-value">{{ store.members().length }}</strong><p class="metric-trend">3 направления разработки</p></article>
+    <article class="card metric-card"><span class="metric-label">Средняя загрузка</span><strong class="metric-value">{{ averageCapacity() }}%</strong><p class="metric-trend">В пределах нормы</p></article>
+    <article class="card metric-card"><span class="metric-label">Активных задач</span><strong class="metric-value">{{ store.tasks().length - store.completedTasks().length }}</strong><p class="metric-trend">На всю команду</p></article>
+    <article class="card metric-card"><span class="metric-label">Завершено</span><strong class="metric-value">{{ store.completedTasks().length }}</strong><p class="metric-trend">В текущем наборе данных</p></article>
+  </section>
+
+  <section class="member-grid">
+    @for (member of store.members(); track member.id) {
+      <article class="card member-card">
+        <div class="member-head"><span class="member-avatar" [style.background]="member.color">{{ member.initials }}</span><span class="presence"></span><button type="button" aria-label="Меню">•••</button></div>
+        <h2>{{ member.name }}</h2><p class="role">{{ member.role }}</p><a [href]="'mailto:' + member.email">{{ member.email }}</a>
+        <div class="skills">@for (skill of member.skills; track skill) { <span class="badge">{{ skill }}</span> }</div>
+        <div class="capacity"><div><span>Загрузка</span><strong>{{ member.capacity }}%</strong></div><div class="progress"><span [style.width.%]="member.capacity"></span></div><small>{{ capacityLabel(member.capacity) }}</small></div>
+        <footer><span><strong>{{ taskCount(member.id) }}</strong> активных</span><span><strong>{{ doneCount(member.id) }}</strong> завершено</span></footer>
+      </article>
+    }
+  </section>
+</div>

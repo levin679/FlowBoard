@@ -1,0 +1,21 @@
+<div class="page">
+  <header class="page-header"><div><h1 class="page-title">Аналитика</h1><p class="page-subtitle">Срез состояния проекта на основе вычисляемых Signals.</p></div><button class="btn" type="button" (click)="print()">Печать отчёта</button></header>
+  <section class="metric-grid">
+    <article class="card metric-card"><span class="metric-label">Completion rate</span><strong class="metric-value">{{ store.completionRate() }}%</strong><p class="metric-trend">Доля завершённых задач</p></article>
+    <article class="card metric-card"><span class="metric-label">Story points</span><strong class="metric-value">{{ store.totalEstimate() }}</strong><p class="metric-trend">Полный объём бэклога</p></article>
+    <article class="card metric-card"><span class="metric-label">Средняя оценка</span><strong class="metric-value">{{ (store.totalEstimate() / store.tasks().length).toFixed(1) }}</strong><p class="metric-trend">На одну задачу</p></article>
+    <article class="card metric-card"><span class="metric-label">Просрочено</span><strong class="metric-value">{{ store.overdueCount() }}</strong><p class="metric-trend">Незавершённые задачи</p></article>
+  </section>
+  <section class="insights-grid">
+    <article class="card chart-card"><div class="card-header"><div><h2 class="card-title">Задачи по статусам</h2><p>Количество карточек в каждой колонке</p></div></div><div class="card-body bar-chart">
+      @for (column of columns; track column.id) { <div class="bar-column"><span class="bar-value">{{ statusCount(column.id) }}</span><div class="bar-track"><span [style.height.%]="statusCount(column.id) * 16"></span></div><small>{{ column.label }}</small></div> }
+    </div></article>
+    <article class="card"><div class="card-header"><div><h2 class="card-title">Приоритеты</h2><p>Распределение рисков</p></div></div><div class="card-body priority-list">
+      @for (priority of priorityOrder; track priority) { <div><div><span class="priority-key" [attr.data-priority]="priority"></span><strong>{{ priorityLabel(priority) }}</strong><b>{{ priorityCount(priority) }}</b></div><div class="progress"><span [style.width.%]="priorityPercent(priority)"></span></div></div> }
+    </div></article>
+    <article class="card member-chart"><div class="card-header"><div><h2 class="card-title">Активная нагрузка</h2><p>Количество незавершённых задач</p></div></div><div class="card-body member-bars">
+      @for (member of store.members(); track member.id) { <div class="member-row"><span class="avatar" [style.background]="member.color">{{ member.initials }}</span><div><strong>{{ member.name }}</strong><div class="progress"><span [style.width.%]="memberBar(member.id)"></span></div></div><b>{{ memberTasks(member.id) }}</b></div> }
+    </div></article>
+    <article class="card recommendations"><div class="card-header"><div><h2 class="card-title">Рекомендации</h2><p>Автоматические подсказки по данным</p></div></div><div class="card-body"><div class="tip warning"><span>!</span><p><strong>Снять блокировку</strong>Две критичные задачи имеют близкий срок.</p></div><div class="tip"><span>↗</span><p><strong>Выровнять загрузку</strong>У backend-разработчика загрузка выше средней.</p></div><div class="tip success"><span>✓</span><p><strong>Темп стабилен</strong>Completion rate соответствует цели спринта.</p></div></div></article>
+  </section>
+</div>

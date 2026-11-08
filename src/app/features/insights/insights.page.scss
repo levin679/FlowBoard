@@ -1,0 +1,24 @@
+.insights-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.card-header p { margin: 5px 0 0; color: var(--text-muted); font-size: .75rem; }
+.bar-chart { height: 280px; display: flex; align-items: end; gap: 18px; }
+.bar-column { flex: 1; min-width: 46px; display: grid; grid-template-rows: 22px 1fr 32px; justify-items: center; gap: 8px; height: 100%; }
+.bar-value { font-size: .72rem; font-weight: 800; }
+.bar-track { width: min(48px, 80%); height: 100%; display: flex; align-items: end; background: var(--surface-2); border-radius: 10px 10px 4px 4px; overflow: hidden; }
+.bar-track span { width: 100%; min-height: 8px; background: linear-gradient(180deg, var(--accent-2), var(--accent)); border-radius: inherit; }
+.bar-column small { color: var(--text-muted); font-size: .62rem; text-align: center; }
+.priority-list { display: grid; gap: 22px; }
+.priority-list > div > div:first-child { display: grid; grid-template-columns: 12px 1fr auto; align-items: center; gap: 9px; margin-bottom: 9px; font-size: .78rem; }
+.priority-key { width: 10px; height: 10px; border-radius: 50%; background: var(--info); }
+.priority-key[data-priority='critical'] { background: var(--danger); }.priority-key[data-priority='high'] { background: var(--warning); }.priority-key[data-priority='low'] { background: var(--success); }
+.member-chart { grid-column: span 1; }
+.member-bars { display: grid; gap: 17px; }
+.member-row { display: grid; grid-template-columns: 38px 1fr 24px; gap: 10px; align-items: center; }
+.member-row .avatar { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; color: #fff; font-size: .62rem; font-weight: 850; }
+.member-row strong { display: block; margin-bottom: 7px; font-size: .76rem; }
+.member-row b { text-align: right; font-size: .8rem; }
+.recommendations .card-body { display: grid; gap: 12px; }
+.tip { display: grid; grid-template-columns: 36px 1fr; gap: 11px; padding: 13px; border-radius: 13px; background: var(--surface-2); }
+.tip > span { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 11px; background: var(--accent-soft); color: var(--accent); font-weight: 900; }
+.tip.warning > span { background: color-mix(in srgb, var(--warning) 12%, transparent); color: var(--warning); }.tip.success > span { background: color-mix(in srgb, var(--success) 12%, transparent); color: var(--success); }
+.tip p { margin: 0; color: var(--text-muted); font-size: .72rem; line-height: 1.45; }.tip strong { display: block; color: var(--text); font-size: .8rem; }
+@media (max-width: 900px) { .insights-grid { grid-template-columns: 1fr; } }

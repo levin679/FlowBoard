@@ -1,0 +1,84 @@
+<div class="page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">{{ today | date:'EEEE, d MMMM':'':'ru-RU' }}</p>
+      <h1 class="page-title">Добрый день, Илья</h1>
+      <p class="page-subtitle">Команда движется по плану. Критичный фокус — валидация формы и обработка ошибок.</p>
+    </div>
+    <div class="page-actions">
+      <a class="btn" routerLink="/insights">Открыть отчёт</a>
+      <a class="btn btn-primary" routerLink="/board">Перейти к доске</a>
+    </div>
+  </header>
+
+  <section class="metric-grid" aria-label="Ключевые показатели">
+    <article class="card metric-card">
+      <span class="metric-label">Всего задач</span><strong class="metric-value">{{ store.tasks().length }}</strong>
+      <p class="metric-trend">{{ store.totalEstimate() }} story points</p>
+    </article>
+    <article class="card metric-card">
+      <span class="metric-label">Активно</span><strong class="metric-value">{{ activeCount() }}</strong>
+      <p class="metric-trend">todo, in progress и review</p>
+    </article>
+    <article class="card metric-card">
+      <span class="metric-label">Выполнено</span><strong class="metric-value">{{ store.completionRate() }}%</strong>
+      <p class="metric-trend positive">+12% к прошлой неделе</p>
+    </article>
+    <article class="card metric-card">
+      <span class="metric-label">Просрочено</span><strong class="metric-value">{{ store.overdueCount() }}</strong>
+      <p class="metric-trend">Требуют внимания</p>
+    </article>
+  </section>
+
+  <section class="dashboard-grid">
+    <article class="card status-card">
+      <div class="card-header"><div><h2 class="card-title">Состояние спринта</h2><p>Распределение задач по этапам</p></div><span class="badge badge-accent">Спринт 24</span></div>
+      <div class="card-body status-list">
+        @for (column of columns; track column.id) {
+          <div class="status-row">
+            <div class="status-copy"><strong>{{ column.label }}</strong><span>{{ count(column.id) }} задач</span></div>
+            <div class="progress"><span [style.width.%]="percent(column.id)"></span></div>
+            <b>{{ percent(column.id) }}%</b>
+          </div>
+        }
+      </div>
+    </article>
+
+    <article class="card health-card">
+      <div class="card-header"><div><h2 class="card-title">Здоровье проекта</h2><p>Агрегированная оценка</p></div></div>
+      <div class="card-body health-body">
+        <div class="ring" [style.--value]="store.completionRate()"><span><strong>{{ store.completionRate() }}</strong><small>из 100</small></span></div>
+        <div class="health-list">
+          <div><span>Темп команды</span><strong class="good">Хороший</strong></div>
+          <div><span>Риски сроков</span><strong>Средние</strong></div>
+          <div><span>Баланс нагрузки</span><strong class="good">Стабильный</strong></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card activity-card">
+      <div class="card-header"><div><h2 class="card-title">Последняя активность</h2><p>Изменения команды</p></div></div>
+      <div class="card-body activity-list">
+        @for (activity of store.activities().slice(0, 5); track activity.id) {
+          <div class="activity-item">
+            <span class="activity-icon">{{ activityIcon(activity.kind) }}</span>
+            <div><p><strong>{{ store.memberName(activity.memberId) }}</strong> {{ activity.text }}</p><small>{{ activity.createdAt | date:'d MMM, HH:mm':'':'ru-RU' }}</small></div>
+          </div>
+        }
+      </div>
+    </article>
+
+    <article class="card deadlines-card">
+      <div class="card-header"><div><h2 class="card-title">Ближайшие сроки</h2><p>Пять ближайших задач</p></div><a routerLink="/board">Все задачи →</a></div>
+      <div class="card-body deadline-list">
+        @for (task of upcoming(); track task.id) {
+          <div class="deadline-item">
+            <span class="priority-dot" [attr.data-priority]="task.priority"></span>
+            <div><strong>{{ task.title }}</strong><small>{{ store.memberName(task.assigneeId) }}</small></div>
+            <time>{{ task.dueDate | date:'d MMM':'':'ru-RU' }}</time>
+          </div>
+        }
+      </div>
+    </article>
+  </section>
+</div>
